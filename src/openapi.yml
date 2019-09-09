@@ -1,1 +1,121 @@
-#tbd
+openapi: 3.0.2
+info:
+  title: Raumbuchungs-API
+  version: 0.1.0
+  description: API für das Buchen und Verwalten von Besprechungsräumen in der NLB.
+
+servers:
+  - url: https://gravitee-01.test.k8s.i-lab.online/raumbuchungsapi
+    description: Testumgebung
+  - url: https://gravitee-01.dev.k8s.i-lab.online/raumbuchungsapi
+    description: Entwicklungsumgebung
+
+tags:
+  - name: Locations
+    description: Umfasst Standorte und Räume.
+  - name: Bookings
+    description: Raumbuchungen
+
+paths:
+  /buildings:
+    description: Ressource für die Standorte an denen sich Besprechungsräume befinden. Nur lesende Zugriffe.
+    get:
+      description: Dieser Endpunkt liefert alle bestehenden Standorte zurück.
+      tags:
+        - Locations
+      operationId: getBuildings
+      parameters:
+        - name: city
+          description: Parameter um Standorte nach der Stadt zu filtern.
+          in: query
+          schema:
+            type: string
+        - name: plz
+          description: Parameter um Standorte nach der PLZ zu filtern.
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Liefert alle Standorte zurück. Wurden Parameter übergeben, werden nur die Standorte zurückgeliefert auf die **alle** Kriterien zu treffen.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Building"
+              example:
+                - id: friwall10
+                  adress:
+                    street: Friedrichswall 10
+                    plz: "30159"
+                    city: Hannover
+                  rooms: ...
+                - id: georgsp8
+                  adress:
+                    street: Georgsplatz 10
+                    plz: "30159"
+                    city: Hannover
+                  rooms: ...
+
+  /buildings/{id}:
+    description: Ressource eines einzelnen Standortes
+
+components:
+  schemas:
+
+    Building:
+      description: Standorte an denen sich Besprechungsräume befinden können.
+      type: object
+      required:
+        - id
+        - adress
+      properties:
+        id:
+          type: string
+          pattern: "^[a-z0-9-]{3,}$"
+          description: Eindeutiger Name des Standortes. Darf nur Zahlen, den Bindestrich und kleine Buchstaben (keine Umlaute) enthalten und muss mindestens drei Zeichen lang sein.
+          example: friwall10
+        adress:
+          type: object
+          description: Postalische Anschrift des Standortes
+          required:
+            - street
+            - plz
+            - city
+          properties:
+            street:
+              type: string
+              description: Straße und Hausnummer
+            plz:
+              type: string
+              pattern: "^[0-9]{5}$"
+              description: PLZ der Adresse
+            city:
+              type: string
+              description: Stadt
+        rooms:
+          type: array
+          description: Besprechungsräume des Standortes
+          items:
+            $ref: "#/components/schemas/TBD"
+
+    TBD:
+      description: TDB
+
+  parameters:
+    ##############################################################
+    # Query Parameters
+    ##############################################################
+    CountryCodeParam:
+      description: zweistelliger Länder-Code nach ISO-3166
+      name: countryCode
+      in: query
+      required: false
+      schema:
+        type: string
+        minLength: 2
+        maxLength: 2
+        example: DE
+
+
