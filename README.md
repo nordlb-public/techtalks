@@ -3,15 +3,12 @@
 
 In diesem Repository finden Sie die benötigten Dateien, um in den Tech Talks praktisch mitarbeiten zu können. Die Teilnahme ist selbstverständlich aber auch ohne das Beispielprojekt möglich.
 
-## Wo finde ich die Stände voriger Tech Talks?
 
-Das Repository hat mehrere Branches. Die aktuellste Version finden Sie immer im `master` Branch, Stände von vorigen Tech Talks finden Sie auf GitHub oben links unter dem Dropdown "Branches". Wenn Sie das Projekt in Ihrer lokalen Entwicklungsumgebung geklont haben, natürlich auch in Ihrer favorisierten IDE.
-
-### Direktlinks zu den Branches
-| Datum      | Thema                                   | Branch                                                 |
-| ---------- | --------------------------------------- | ------------------------------------------------------ |
-| 12.09.2019 | Design einer API                        | https://github.com/nordlb/techtalks/tree/01-api-design |
-| ?          | Implementierung einer API in SpringBoot |                                                        |
+## Übersicht der Tech Talks
+| Datum      | Thema                                   | Verzeichnis                                                   |
+| ---------- | --------------------------------------- | ------------------------------------------------------------- |
+| 12.09.2019 | Design einer API                        | https://github.com/nordlb/techtalks/tree/master/01-api-design |
+| ?          | Implementierung einer API in SpringBoot |                                                               |
 
 ## Wie kann ich das Projekt klonen?
 
