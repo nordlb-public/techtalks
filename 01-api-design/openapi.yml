@@ -4,78 +4,69 @@ info:
   version: 0.1.0
   description: API für das Buchen und Verwalten von Besprechungsräumen in der NLB.
 
+
 servers:
   - url: https://gravitee-01.test.k8s.i-lab.online/raumbuchungsapi
     description: Testumgebung
   - url: https://gravitee-01.dev.k8s.i-lab.online/raumbuchungsapi
     description: Entwicklungsumgebung
 
+
 tags:
-  - name: Locations
-    description: Umfasst Standorte und Räume.
-  - name: Bookings
-    description: Raumbuchungen
+  - name: Besprechungsräume
+  - name: Raumbuchungen
+
 
 paths:
-  /buildings:
-    description: Ressource für die Standorte an denen sich Besprechungsräume befinden. Nur lesende Zugriffe.
+  /rooms:
+    description: Ressource für Besprechungsräume.
     get:
-      description: Dieser Endpunkt liefert alle bestehenden Standorte zurück. Wurden Parameter übergeben, werden nur die Standorte zurückgeliefert auf die **alle** Kriterien zu treffen. Wenn es keine Standorte gibt, auf die die Filterkriterien zu treffen, wird ein 200er mit leerer Liste zurückgeliefert.
+      summary: Liefert Besprechungsräume.
+      description: Liefert alle Besprechungsräume zurück. Wurden Parameter übergeben, werden nur die Besprechungsräume zurückgeliefert auf die **alle** Kriterien zu treffen. Wenn es keine Räume gibt, auf die die Filterkriterien zu treffen, wird ein 200er mit leerer Liste zurückgeliefert.
       tags:
-        - Locations
-      operationId: getBuildings
+        - Besprechungsräume
+      operationId: getRooms
       parameters:
-        - name: city
-          description: Parameter um Standorte nach der Stadt zu filtern.
+        - name: capacity
+          description: Parameter um nach Besprechungsräumen zu suchen, die mindestens Platz für die angegebene Anzahl Personen hat.
           in: query
           schema:
-            type: string
-        - name: name
-          description: Parameter um Standorte nach dem Namen zu filtern.
-          in: query
-          schema:
-            type: string
+            type: integer
       responses:
         '200':
-          description: Erfolgreicher Zugriff
+          description: Erfolgreicher Zugriff.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Building"
-              example:
-                - id: 9221035d-8512-4706-aef5-c0a09efe160c
-                  name: Friwall
-                  address:
-                    street: Friedrichswall 10
-                    plz: "30159"
-                    city: Hannover
-                  rooms: ...
-                - id: 3429e546-abc3-45d4-b8ad-552e3359e882
-                  name: HBA 11
-                  address:
-                    street: Hans-Böckler-Allee 11
-                    plz: "30173"
-                    city: Hannover
-                  rooms: ...
+                  $ref: '#/components/schemas/Room'
+                example:
+                  - room_id: 6f410920-ea6b-4fbe-b2cb-f0875f7cf3a1
+                    name: O0_00W50
+                    capacity: 25
+                  - room_id: fb904c1b-bc00-4ce9-ba36-daaa9bac0219
+                    name: O0_00W60
+                    capacity: 42
     post:
-      description: Legt einen neuen Standort an und liefert das vollständige Standort-Objekt zurück.
+      summary: Anlage eines Besprechungraumes.
+      description: Legt einen neuen Besprechungsraum an und liefert das vollständige Besprechungsraumobjekt zurück.
       tags:
-        - Locations
+        - Besprechungsräume
+      operationId: addRoom
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BuildingWrite'
+              $ref: '#/components/schemas/RoomWrite'
       responses:
         '200':
-          description: Neuer Standort wurde erfolgreich angelegt. Vollständiges Standort-Objekt befindet sich in der Antwort.
+          description: Neuer Besprechungsraum wurde angelegt. Vollständiges Besprechungsraum-Objekt befindet sich in der Antwort.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Building'
+                $ref: '#/components/schemas/Room'
         '400':
           description: Fehlerhafte Eingabedaten.
           content:
@@ -83,154 +74,102 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /buildings/{id}:
-    description: Ressource eines einzelnen Standortes. Lesender und schreibender Zugriff.
+  /rooms/{room_id}:
+    description: Resource um auf einen einzelnen Besprechungsraum zu zugreifen.
     parameters:
-      - name: id
-        in: path
-        required: true
-        description: ID des Standortes.
-        schema:
-          type: string
-          pattern: "^[a-z0-9-]{3,}$"
-          example: friwall10
+      - $ref: '#/components/parameters/RoomId'
     get:
-      description: Liefert einen Standort zurück.
+      summary: Liefert den Besprechungsraum.
+      description: Liefert den Besprechung zur übergebenen ID zurück. Gibt es den Besprechungsraum nicht wird mit 404 geantwortet.
       tags:
-        - Locations
-      operationId: getBuilding
+        - Besprechungsräume
+      operationId: getRoom
       responses:
         '200':
-          description: Erfolgreicher Zugriff auf den Standort.
+          description: Erfolgreicher Zugriff.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Building'
+                $ref: '#/components/schemas/Room'
         '404':
-          description: Kein Standort mit dieser Id vorhanden.
+          description: Besprechungsraum existiert nicht.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
     put:
-      description: Ändert die Daten des Standortes unter dieser Id.
+      summary: Ändert den Besprechungsraum.
+      description: Ändert den Besprechungsraum und gibt das aktualisierte Raum-Objekt zurück.
       tags:
-        - Locations
-      operationId: updateBuilding
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BuildingWrite'
+        - Besprechungsräume
+      operationId: updateRoom
       responses:
         '200':
-          description: Standort wurde geändert. Die neuen Daten werden in der Payload mitgeliefert.
+          description: Raum wurde aktualisiert.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Building'
+                $ref: '#/components/schemas/Room'
         '400':
-          description: Fehlerhafte Eingabedaten.
+          description: Eingabedaten fehlerhaft.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: Kein Standort mit dieser Id vorhanden.
+          description: Raum oder Standort existiert nicht.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
     delete:
-      description: Löscht den Standort unter dieser Id.
+      summary: Löscht den Besprechungsraum.
+      description: Löscht den Besprechungsraum.
       tags:
-        - Locations
-      operationId: deleteBuilding
+        - Besprechungsräume
+      operationId: deleteRoom
       responses:
         '204':
-          description: Standort wurde gelöscht.
+          description: Raum wurde gelöscht. Antwort enthält keine Payload.
         '404':
-          description: Kein Standort mit dieser Id vorhanden.
+          description: Raum nicht gefunden.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
 
 components:
+
   schemas:
-
-    Building:
-      description: Standorte an denen sich Besprechungsräume befinden können.
+    Room:
       type: object
+      description: Besprechungsraum-Objekt für lesende Zugriffe
       required:
-        - id
-        - name
-        - address
-        - rooms
-      properties:
-        id:
-          type: string
-          description: UUID des Standortes.
-        name:
-          type: string
-          description: Name des Standortes.
-        address:
-         $ref: '#/components/schemas/Address'
-        rooms:
-          type: array
-          description: Besprechungsräume des Standortes
-          items:
-            $ref: "#/components/schemas/TBD"
-      example:
-        id: 9221035d-8512-4706-aef5-c0a09efe160c
-        name: Friwall
-        address:
-          street: Friedrichswall 10
-          plz: "30159"
-          city: Hannover
-        rooms: ...
+        - room_id
+      allOf:
+        - type: object
+          properties:
+            room_id:
+              type: string
+              description: UUID des Raumes
+              example: 6f410920-ea6b-4fbe-b2cb-f0875f7cf3a1
+        - $ref: '#/components/schemas/RoomWrite'
 
-    BuildingWrite:
-      description: Objekt für die Änderung eines Standortes
+    RoomWrite:
       type: object
+      description: Besprechungsraum-Objekt für schreibende Zugriffe
       required:
         - name
-        - address
+        - capacity
       properties:
         name:
           type: string
-          description: Name des Standortes.
-        address:
-          $ref: '#/components/schemas/Address'
-      example:
-        name: Friwall
-        address:
-          street: Friedrichswall 10
-          plz: "30159"
-          city: Hannover
-
-    Address:
-      type: object
-      description: Postalische Anschrift des Standortes
-      required:
-        - street
-        - plz
-        - city
-      properties:
-        street:
-          type: string
-          description: Straße und Hausnummer
-        plz:
-          type: string
-          pattern: "^[0-9]{5}$"
-          description: PLZ der Adresse
-        city:
-          type: string
-          description: Stadt
-
-    TBD:
-      description: TDB
+          description: Raumbezeichnung
+          example: O0_00W50
+        capacity:
+          type: integer
+          description: Anzahl Sitzplätze im Besprechungsraum
+          example: 25
 
     Error:
       description: Fehler
@@ -245,6 +184,14 @@ components:
         message:
           type: string
           description: Fehlermeldung
-      example:
-        code: 404
-        message: Objekt mit id xyz existiert nicht.
+
+
+  parameters:
+    RoomId:
+      name: room_id
+      in: path
+      required: true
+      description: UUID des Besprechungsraumes.
+      schema:
+        type: string
+        example: 5fcec5cd-a4f6-42f3-b9c0-b78cc120fd49
