@@ -1,12 +1,15 @@
 # Design einer API
 
-## Wie kann ich die Extension für OpenAPI in VS Code installieren?
-
+## OpenAPI Extension für VS Code
 Öffnen Sie Visual Studio Code und klicken Sie links auf das Icon "Extensions". Suchen Sie dort nach "Swagger Viewer" und installieren Sie die Extension. Sie müssen VS Code neuladen, um die Extension zu nutzen.
 
-## Wie kann ich die Extension benutzen?
-
 Wenn Sie sich in einer OpenAPI-Spezifikation-Datei befinden, können Sie mit `Windows + P` oder `Command + P` die Befehlszeile von VS Code. Mit dem Befehl `> Preview Swagger` können Sie dann eine aus der Spezifikation erstellte Dokumentation sehen.
+
+
+## OpenAPI Plugin für IntelliJ
+Öffnen Sie die Einstellungen > Plugins und installieren Sie darüber das Swagger-Plugin von Zalando SE und starten Sie anschließend die IDE neu. 
+
+Für Yaml-Dateien mit `openapi: 3.x.x` in der ersten Zeile, wird das Plugin automatisch aktiviert. In der rechten oberen Ecke des Editors wird dann eine Leiste für die Vorschau in einem Browser angezeigt.
 
 ## Weiterführende Links
 
