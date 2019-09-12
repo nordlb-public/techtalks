@@ -12,7 +12,12 @@ Wenn Sie sich in einer OpenAPI-Spezifikation-Datei befinden, können Sie mit `Wi
 Für Yaml-Dateien mit `openapi: 3.x.x` in der ersten Zeile, wird das Plugin automatisch aktiviert. In der rechten oberen Ecke des Editors wird dann eine Leiste für die Vorschau in einem Browser angezeigt.
 
 ## Weiterführende Links
-
-* [VS Code Plugin für OpenAPI-Spezifikationen](https://marketplace.visualstudio.com/items?itemName=Arjun.swagger-viewer)
-* [Online Swagger Editor](https://editor.swagger.io/)
-* [Dissertation von Roy Fielding](https://www.ics.uci.edu/~fielding/pubs/dissertation/fielding_dissertation.pdf)
+* OpenAPI:
+  * [Online Swagger Editor](https://editor.swagger.io/)
+  * [Specification](https://swagger.io/specification/)
+  * [Documentation](https://swagger.io/docs/specification/about/)
+* REST
+  * [Dissertation von Roy Fielding](https://www.ics.uci.edu/~fielding/pubs/dissertation/fielding_dissertation.pdf)
+  * [RFC-7321](https://tools.ietf.org/html/rfc7231)
+  * [RFC-7320](https://tools.ietf.org/html/rfc7230)
+  * [RFC-6585](https://tools.ietf.org/html/rfc6585)

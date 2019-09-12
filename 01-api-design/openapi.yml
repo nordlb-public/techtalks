@@ -48,6 +48,12 @@ paths:
                   - room_id: fb904c1b-bc00-4ce9-ba36-daaa9bac0219
                     name: O0_00W60
                     capacity: 42
+        default:
+          description: Fehlerhafter Zugriff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     post:
       summary: Anlage eines Besprechungraumes.
       description: Legt einen neuen Besprechungsraum an und liefert das vollständige Besprechungsraumobjekt zurück.
@@ -69,6 +75,12 @@ paths:
                 $ref: '#/components/schemas/Room'
         '400':
           description: Fehlerhafte Eingabedaten.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Fehlerhafter Zugriff
           content:
             application/json:
               schema:
@@ -97,12 +109,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        default:
+          description: Fehlerhafter Zugriff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     put:
       summary: Ändert den Besprechungsraum.
       description: Ändert den Besprechungsraum und gibt das aktualisierte Raum-Objekt zurück.
       tags:
         - Besprechungsräume
       operationId: updateRoom
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomWrite'
       responses:
         '200':
           description: Raum wurde aktualisiert.
@@ -122,6 +145,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        default:
+          description: Fehlerhafter Zugriff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     delete:
       summary: Löscht den Besprechungsraum.
       description: Löscht den Besprechungsraum.
@@ -133,6 +162,12 @@ paths:
           description: Raum wurde gelöscht. Antwort enthält keine Payload.
         '404':
           description: Raum nicht gefunden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Fehlerhafter Zugriff
           content:
             application/json:
               schema:
