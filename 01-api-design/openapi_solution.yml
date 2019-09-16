@@ -1,0 +1,461 @@
+openapi: 3.0.2
+info:
+  title: Raumbuchungs-API
+  version: 0.1.0
+  description: API für das Buchen und Verwalten von Besprechungsräumen in der NLB.
+
+
+servers:
+  - url: https://gravitee-01.test.k8s.i-lab.online/raumbuchungsapi
+    description: Testumgebung
+  - url: https://gravitee-01.dev.k8s.i-lab.online/raumbuchungsapi
+    description: Entwicklungsumgebung
+
+
+tags:
+  - name: Besprechungsräume
+  - name: Raumbuchungen
+
+
+paths:
+  /rooms:
+    description: Ressource für Besprechungsräume.
+    get:
+      summary: Liefert Besprechungsräume.
+      description: Liefert alle Besprechungsräume zurück. Wurden Parameter übergeben, werden nur die Besprechungsräume zurückgeliefert auf die **alle** Kriterien zu treffen. Wenn es keine Räume gibt, auf die die Filterkriterien zu treffen, wird ein 200er mit leerer Liste zurückgeliefert.
+      tags:
+        - Besprechungsräume
+      operationId: getRooms
+      parameters:
+        - name: capacity
+          description: Parameter um nach Besprechungsräumen zu suchen, die mindestens Platz für die angegebene Anzahl Personen hat.
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Erfolgreicher Zugriff.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+                example:
+                  - room_id: 6f410920-ea6b-4fbe-b2cb-f0875f7cf3a1
+                    name: O0_00W50
+                    capacity: 25
+                  - room_id: fb904c1b-bc00-4ce9-ba36-daaa9bac0219
+                    name: O0_00W60
+                    capacity: 42
+        default:
+          description: Fehlerhafter Zugriff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Anlage eines Besprechungraumes.
+      description: Legt einen neuen Besprechungsraum an und liefert das vollständige Besprechungsraumobjekt zurück.
+      tags:
+        - Besprechungsräume
+      operationId: addRoom
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomWrite'
+      responses:
+        '200':
+          description: Neuer Besprechungsraum wurde angelegt. Vollständiges Besprechungsraum-Objekt befindet sich in der Antwort.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '400':
+          description: Fehlerhafte Eingabedaten.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Fehlerhafter Zugriff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /rooms/{room_id}:
+    description: Resource um auf einen einzelnen Besprechungsraum zu zugreifen.
+    parameters:
+      - $ref: '#/components/parameters/RoomId'
+    get:
+      summary: Liefert den Besprechungsraum.
+      description: Liefert den Besprechung zur übergebenen ID zurück. Gibt es den Besprechungsraum nicht wird mit 404 geantwortet.
+      tags:
+        - Besprechungsräume
+      operationId: getRoom
+      responses:
+        '200':
+          description: Erfolgreicher Zugriff.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '404':
+          description: Besprechungsraum existiert nicht.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Fehlerhafter Zugriff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Ändert den Besprechungsraum.
+      description: Ändert den Besprechungsraum und gibt das aktualisierte Raum-Objekt zurück.
+      tags:
+        - Besprechungsräume
+      operationId: updateRoom
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomWrite'
+      responses:
+        '200':
+          description: Raum wurde aktualisiert.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+        '400':
+          description: Eingabedaten fehlerhaft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Raum oder Standort existiert nicht.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Fehlerhafter Zugriff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Löscht den Besprechungsraum.
+      description: Löscht den Besprechungsraum.
+      tags:
+        - Besprechungsräume
+      operationId: deleteRoom
+      responses:
+        '204':
+          description: Raum wurde gelöscht. Antwort enthält keine Payload.
+        '404':
+          description: Raum nicht gefunden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Fehlerhafter Zugriff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /bookings:
+    description: Resource um auf die Raumbuchungen zu zugreifen.
+    get:
+      summary: Liefert Raumbuchungen.
+      description: Liefert alle zukünftigen Raumbuchungen auf die **alle** angegebenen Filter zutreffen. Gibt es keine solche Buchung, wird ein 200er mit leerer Liste zurückgeliefert.
+      tags:
+        - Raumbuchungen
+      operationId: getBookings
+      parameters:
+        - name: room_id
+          description: Wenn angegeben, werden nur Buchungen für diesen Besprechungraum zurückgeliefert.
+          in: query
+          schema:
+            type: string
+        - name: start
+          description: Wenn angegeben, werden nur Buchungen zurückgeliefert, die nach dem angegebenen Zeitpunkt enden.
+          in: query
+          schema:
+            type: string
+            format: 'date-time'
+        - name: end
+          description: Wenn angegeben, werden nur Buchungen zurückgeliefert, die vor dem angegebenen Zeitpunkt starten.
+          in: query
+          schema:
+            type: string
+            format: 'date-time'
+      responses:
+        '200':
+          description: Anfrage erfolgreich.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+              example:
+                - booking_id: 5fcec5cd-a4f6-42f3-b9c0-b78cc120fd49
+                  room_id: 6f410920-ea6b-4fbe-b2cb-f0875f7cf3a1
+                  start_date: 2019-12-06T08:00:00Z
+                  duration: 60
+                  email: max.muster@nordlb.de
+                - booking_id: 8dd898bc-8cc7-4526-b70b-02b9db2d6d2f
+                  room_id: 6f410920-ea6b-4fbe-b2cb-f0875f7cf3a1
+                  start_date: 2019-12-24T18:00:00Z
+                  duration: 360
+        '400':
+          description: Eingabedaten fehlerhaft, z.b. Datumsformat ungültig oder unbekannte Raum-Id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Fehlerhafter Zugriff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Bucht einen Besprechungsraum.
+      description: Legt eine neue Buchung für einen Besprechungsraum an.
+      tags:
+        - Raumbuchungen
+      operationId: addBooking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingWrite'
+      responses:
+        '201':
+          description: Besprechungsraum erfolgreich reserviert.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: Eingabe war fehlerhaft (z.b. Email-Adresse oder Datum ungültig).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Besprechungsraum ist zum gewünschten Zeitpunkt nicht buchbar/bereits gebucht.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Fehlerhafter Zugriff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+  /bookings/{booking_id}:
+    description: Resource für den Zugriff auf eine Raumbuchung.
+    parameters:
+      - $ref: '#/components/parameters/BookingId'
+    get:
+      summary: Liefert die Buchung.
+      description: Liefert die Buchung zu der übergebenen Buchungs-Id.
+      tags:
+        - Raumbuchungen
+      operationId: getBooking
+      responses:
+        '200':
+          description: Erfolgreicher Zugriff.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '404':
+          description: Keine Buchung zur übergebenen Buchungsid vorhanden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Fehlerhafter Zugriff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Ändert die Buchung.
+      description: Ändert die Buchung. Bei erfolgreicher Änderung wird das vollständige Buchungsobjekt zurückgeliefert.
+      tags:
+        - Raumbuchungen
+      operationId: updateBooking
+      responses:
+        '200':
+          description: Änderung erfolgreich.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '404':
+          description: Keine Buchung zur Buchungsid vorhanden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Besprechungsraum ist zum gewünschten Zeitpunkt nicht buchbar/bereits gebucht.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Fehlerhafter Zugriff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Löscht die Buchung.
+      description: Löscht die Buchung. Bei erfolgreicher Löschung wird keine Payload zurückgeliefert.
+      tags:
+        - Raumbuchungen
+      operationId: deleteBooking
+      responses:
+        '204':
+          description: Löschung erfolgreich.
+        '404':
+          description: Buchung nicht gefunden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Fehlerhafter Zugriff
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+components:
+
+  schemas:
+    Room:
+      type: object
+      description: Besprechungsraum-Objekt für lesende Zugriffe
+      required:
+        - room_id
+      allOf:
+        - type: object
+          properties:
+            room_id:
+              type: string
+              description: UUID des Raumes
+              example: 6f410920-ea6b-4fbe-b2cb-f0875f7cf3a1
+        - $ref: '#/components/schemas/RoomWrite'
+
+    RoomWrite:
+      type: object
+      description: Besprechungsraum-Objekt für schreibende Zugriffe
+      required:
+        - name
+        - capacity
+      properties:
+        name:
+          type: string
+          description: Raumbezeichnung
+          example: O0_00W50
+        capacity:
+          type: integer
+          description: Anzahl Sitzplätze im Besprechungsraum
+          example: 25
+
+    BookingWrite:
+      type: object
+      description: Raumbuchungsobjekt für schreibende Zugriffe.
+      required:
+        - room_id
+        - start_date
+        - duration
+      properties:
+        room_id:
+          type: string
+          description: UUID des zubuchenden Besprechungsraumes.
+          example: 6f410920-ea6b-4fbe-b2cb-f0875f7cf3a1
+        start_date:
+          type: string
+          format: date-time
+          description: Startzeitpunkt der Raumbuchung
+          example: '2017-07-21T17:32:28Z'
+        duration:
+          type: integer
+          description: Dauer der Raumbuchung in Minuten
+          example: 60
+        email:
+          type: string
+          format: email
+          description: Email-Adresse der Person die den Raum gebucht hat.
+
+    Booking:
+      type: object
+      description: Raumbuchungsobjekt für lesende Zugriffe.
+      required:
+        - booking_id
+      allOf:
+        - type: object
+          properties:
+            booking_id:
+              type: string
+              description: UUID der Raumbuchung
+              example: 5fcec5cd-a4f6-42f3-b9c0-b78cc120fd49
+        - $ref: '#/components/schemas/BookingWrite'
+
+
+    Error:
+      description: Fehler
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          description: HTTP Status Code
+        message:
+          type: string
+          description: Fehlermeldung
+
+
+  parameters:
+    RoomId:
+      name: room_id
+      in: path
+      required: true
+      description: UUID des Besprechungsraumes.
+      schema:
+        type: string
+        example: 5fcec5cd-a4f6-42f3-b9c0-b78cc120fd49
+
+    BookingId:
+      name: booking_id
+      in: path
+      required: true
+      description: UUID der Raumbuchung.
+      schema:
+        type: string
+        example: 5fcec5cd-a4f6-42f3-b9c0-b78cc120fd49
