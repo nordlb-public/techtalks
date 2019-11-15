@@ -1,0 +1,30 @@
+version: "3"
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: techtalks/api-generierung-server
+    container_name: src-solution-server
+    restart: always
+    tty: true
+    volumes:
+      - ./server/lib:/var/www/html
+      - /var/www/html/vendor/
+    ports:
+      - 8001:80
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: techtalks/api-generierung-client
+    container_name: src-solution
+    restart: always
+    tty: true
+    volumes:
+      - ./client:/var/www/html
+      - /var/www/html/vendor/
+    ports:
+      - 8000:80
+    depends_on:
+      - server
