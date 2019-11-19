@@ -1,0 +1,1 @@
+docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i /local/taskapi.yaml -g spring -o /local/server
