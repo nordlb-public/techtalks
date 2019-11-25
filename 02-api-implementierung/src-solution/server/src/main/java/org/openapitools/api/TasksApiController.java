@@ -22,4 +22,11 @@ public class TasksApiController implements TasksApi {
         return Optional.ofNullable(request);
     }
 
+    @Override
+    public ResponseEntity<Task> createTask(TaskWrite taskWrite) {
+        
+
+        
+        return new ResponseEntity<>(new Task().text(taskWrite));
+    }
 }
