@@ -1,6 +1,6 @@
 # OpenAPI\Client\TasksApi
 
-All URIs are relative to *http://server/cttaskapi*
+All URIs are relative to *http://server:8080/taskapi*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

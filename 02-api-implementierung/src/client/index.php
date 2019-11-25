@@ -43,7 +43,7 @@ try {
 } catch (Exception $e) {
     echo $e->getMessage(), PHP_EOL;
 }
-echo "<main><h2>c't Task Frontend</h2>";
+echo "<main><h2>Techtalks Task Frontend</h2>";
 if (count($tasks)) {
     echo "<table class='table table table-striped'>";
     foreach ($tasks as $task) {
