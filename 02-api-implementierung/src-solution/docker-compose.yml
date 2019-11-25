@@ -9,8 +9,7 @@ services:
     restart: always
     tty: true
     volumes:
-      - ./server/lib:/var/www/html
-      - /var/www/html/vendor/
+      - ./server/.m2:/root/.m2
     ports:
       - 8001:8080
   client:

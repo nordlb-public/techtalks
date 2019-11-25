@@ -20,4 +20,4 @@ RUN mvn install
 #ENTRYPOINT ["sleep"]
 #CMD ["3000000000"]
 
-ENTRYPOINT ["java", "-jar", "/usr/src/app/target/openapi-spring-1.0.0.jar"]#
+ENTRYPOINT ["java", "-jar", "/usr/src/app/target/openapi-spring-1.0.0.jar"]
