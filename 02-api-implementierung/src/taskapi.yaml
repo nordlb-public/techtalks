@@ -5,7 +5,7 @@ info:
   license:
     name: MIT
 servers:
-  - url: "http://server/taskapi/"
+  - url: "http://server:8080/taskapi"
 paths:
   /tasks:
     get:

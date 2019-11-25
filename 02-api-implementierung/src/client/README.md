@@ -79,7 +79,7 @@ try {
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://server/cttaskapi*
+All URIs are relative to *http://server:8080/taskapi*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
