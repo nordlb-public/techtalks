@@ -12,7 +12,7 @@ services:
       - ./server/lib:/var/www/html
       - /var/www/html/vendor/
     ports:
-      - 8001:80
+      - 8001:8080
   client:
     build:
       context: ./client
