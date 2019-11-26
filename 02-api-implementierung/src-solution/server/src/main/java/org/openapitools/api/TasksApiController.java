@@ -28,7 +28,6 @@ public class TasksApiController implements TasksApi {
   public TasksApiController(NativeWebRequest request, ITasksState tasksState) {
     this.request = request;
     this.taskState = tasksState;
-    this.taskState.createTask("initial task", true);
   }
 
   @Override
@@ -42,16 +41,16 @@ public class TasksApiController implements TasksApi {
   }
 
   @Override
-  public ResponseEntity<Void> deleteTask(String taskId) {
-    if (taskState.getTaskById(Integer.parseInt(taskId)) != null) {
+  public ResponseEntity<Void> deleteTask(Integer taskId) {
+    if (taskState.getTaskById(taskId) != null) {
       return ResponseEntity.noContent().build();
     }
     return ResponseEntity.notFound().build();
   }
 
   @Override
-  public ResponseEntity<Task> getTaskById(String taskId) {
-    Task task = taskState.getTaskById(Integer.parseInt(taskId));
+  public ResponseEntity<Task> getTaskById(Integer taskId) {
+    Task task = taskState.getTaskById(taskId);
     return task == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(task);
   }
 
@@ -61,8 +60,8 @@ public class TasksApiController implements TasksApi {
   }
 
   @Override
-  public ResponseEntity<Task> updateTask(String taskId, @Valid TaskWrite taskWrite) {
-    Task task = taskState.getTaskById(Integer.parseInt(taskId));
+  public ResponseEntity<Task> updateTask(Integer taskId, @Valid TaskWrite taskWrite) {
+    Task task = taskState.getTaskById(taskId);
     return (task == null) ?
         ResponseEntity.notFound().build() :
         ResponseEntity.ok(task
