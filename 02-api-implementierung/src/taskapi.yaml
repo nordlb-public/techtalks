@@ -50,7 +50,7 @@ paths:
           required: true
           description: The id of the Task to retrieve
           schema:
-            type: string
+            type: int
       responses:
         "200":
           description: Expected response to a valid request
@@ -69,7 +69,7 @@ paths:
           required: true
           description: id of the task to update
           schema:
-            type: string
+            type: int
       requestBody:
         content:
           application/json:
@@ -93,7 +93,7 @@ paths:
           required: true
           description: id of the task to delete
           schema:
-            type: string
+            type: int
       responses:
         "204":
           description: expected response to a valid request
