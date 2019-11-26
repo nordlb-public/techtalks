@@ -6,10 +6,6 @@ services:
       dockerfile: Dockerfile
     image: techtalks/api-generierung-server
     container_name: src-solution-server
-    restart: always
-    tty: true
-    volumes:
-      - ./server/.m2:/root/.m2
     ports:
       - 8001:8080
   client:
@@ -18,8 +14,6 @@ services:
       dockerfile: Dockerfile
     image: techtalks/api-generierung-client
     container_name: src-solution
-    restart: always
-    tty: true
     volumes:
       - ./client:/var/www/html
       - /var/www/html/vendor/

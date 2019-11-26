@@ -1,23 +1,31 @@
-FROM maven:3.6.2-jdk-13
+# ---
+# Building Stage
+FROM maven:3.6.2-jdk-13 AS build
 
-ENTRYPOINT ["/usr/bin/mvn"]
-
-# ----
-# Install project dependencies and keep sources
 # make source folder
 RUN mkdir -p /usr/src/app
+
+# set working directory
 WORKDIR /usr/src/app
 
-# install maven dependency packages (keep in image)
+# copy pom
 COPY pom.xml /usr/src/app
+
+# install dependencies
+RUN mvn dependency:go-offline
 
 # copy other source files (keep in image)
 COPY src /usr/src/app/src
 
-RUN mvn install
-#RUN mvn -T 1C install && rm -rf target
+# compile package
+RUN mvn package
 
-#ENTRYPOINT ["sleep"]
-#CMD ["3000000000"]
+# ---
+# Running Stage
+FROM openjdk:13
 
-ENTRYPOINT ["java", "-jar", "/usr/src/app/target/openapi-spring-1.0.0.jar"]
+# copy jar file from building stage
+COPY --from=build /usr/src/app/target/openapi-spring-1.0.0.jar /usr/app/app.jar
+
+# run jar file
+ENTRYPOINT ["java", "-jar", "/usr/app/app.jar"]
