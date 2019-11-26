@@ -27,7 +27,7 @@ import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2019-11-15T10:10:17.509Z[GMT]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2019-11-26T15:59:37.828Z[GMT]")
 
 @Validated
 @Api(value = "tasks", description = "the tasks API")
@@ -63,7 +63,7 @@ public interface TasksApi {
         @ApiResponse(code = 204, message = "expected response to a valid request") })
     @RequestMapping(value = "/tasks/{taskId}",
         method = RequestMethod.DELETE)
-    default ResponseEntity<Void> deleteTask(@ApiParam(value = "id of the task to delete",required=true) @PathVariable("taskId") String taskId) {
+    default ResponseEntity<Void> deleteTask(@ApiParam(value = "id of the task to delete",required=true, defaultValue="null") @PathVariable("taskId") Integer taskId) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
@@ -75,7 +75,7 @@ public interface TasksApi {
     @RequestMapping(value = "/tasks/{taskId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<Task> getTaskById(@ApiParam(value = "The id of the Task to retrieve",required=true) @PathVariable("taskId") String taskId) {
+    default ResponseEntity<Task> getTaskById(@ApiParam(value = "The id of the Task to retrieve",required=true, defaultValue="null") @PathVariable("taskId") Integer taskId) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
@@ -116,7 +116,7 @@ public interface TasksApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.PUT)
-    default ResponseEntity<Task> updateTask(@ApiParam(value = "id of the task to update",required=true) @PathVariable("taskId") String taskId,@ApiParam(value = ""  )  @Valid @RequestBody TaskWrite taskWrite) {
+    default ResponseEntity<Task> updateTask(@ApiParam(value = "id of the task to update",required=true, defaultValue="null") @PathVariable("taskId") Integer taskId,@ApiParam(value = ""  )  @Valid @RequestBody TaskWrite taskWrite) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
