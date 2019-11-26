@@ -1,3 +1,40 @@
 .DS_Store
 .idea
 ~*.pptx
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+.env
+
+### NetBeans ###
+/nbproject/private/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### node ###
+package-lock.json
+node_modules/
+
+### Maven ###
+.mvn/
+target/
+
+.m2/repository/
+
+### VS Code ###
+.vscode
