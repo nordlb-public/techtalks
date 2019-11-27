@@ -8,7 +8,7 @@ In diesem Repository finden Sie die benötigten Dateien, um in den Tech Talks pr
 | Datum      | Thema                                   | Verzeichnis                                                   |
 | ---------- | --------------------------------------- | ------------------------------------------------------------- |
 | 12.09.2019 | Design einer API                        | https://github.com/nordlb/techtalks/tree/master/01-api-design |
-| ?          | Implementierung einer API in SpringBoot |    https://github.com/nordlb/techtalks/tree/master/02-api-implementierung                                                           |
+| 28.11.2019          | Implementierung einer API in SpringBoot |    https://github.com/nordlb/techtalks/tree/master/02-api-implementierung                                                           |
 
 ## Wie kann ich das Projekt klonen?
 
